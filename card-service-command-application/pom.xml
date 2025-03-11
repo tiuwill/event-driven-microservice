@@ -11,7 +11,7 @@
 	<groupId>com.cardservice</groupId>
 	<artifactId>card-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>card-service</name>
+	<name>card-service-command-application</name>
 	<description>Credit Card Service CQRS example</description>
 	<url/>
 	<licenses>

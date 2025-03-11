@@ -27,8 +27,8 @@ public class CardTransactionController {
     @PostMapping
     public ResponseEntity<CardTransaction> processTransaction(@Valid @RequestBody CardTransaction transaction) {
         log.info("Received transaction request: {}", transaction);
-        CardTransaction processedTransaction = transactionService.processTransaction(transaction);
-        return new ResponseEntity<>(processedTransaction, HttpStatus.CREATED);
+        transactionService.processTransaction(transaction);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PostMapping("/refund")

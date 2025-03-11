@@ -20,7 +20,7 @@ services:
 #      - EVENTSTORE_CLUSTER_SIZE=1 #for single node
 
   rewards_db:
-    image: eventstore/eventstore:latest
+    image: eventstore/eventstore:22.6.0-bionic
     container_name: rewards-eventstoredb
     ports:
       - "2114:2113" # Changed to 2114 HTTP port
@@ -31,3 +31,5 @@ services:
       - EVENTSTORE_START_STANDARD_PROJECTIONS=True
       - EVENTSTORE_CLUSTER_SIZE=1 #for single node
       - EVENTSTORE_INSECURE=true # New: Run in insecure mode
+#      - EVENTSTORE_HTTP_PORT=2114 # Enable HTTP access on port 2114
+      - EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP=true # Enable AtomPub over HTTP

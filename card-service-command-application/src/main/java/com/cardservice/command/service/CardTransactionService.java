@@ -1,5 +1,6 @@
 package com.cardservice.command.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 import com.cardservice.command.event.EventPublisher;
@@ -8,6 +9,10 @@ import com.cardservice.command.model.DisputeRequest;
 import com.cardservice.command.model.RefundRequest;
 import com.cardservice.command.model.TransactionStatus;
 import com.cardservice.command.repository.CardTransactionRepository;
+import com.eventstore.dbclient.EventData;
+import com.eventstore.dbclient.EventDataBuilder;
+import com.eventstore.dbclient.EventStoreDBClient;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,21 +26,28 @@ public class CardTransactionService {
     private final CardTransactionRepository transactionRepository;
     private final CardLimitService cardLimitService;
     private final EventPublisher eventPublisher;
+    private final EventStoreDBClient eventStore;
+    private final ObjectMapper objectMapper;
 
-    public CardTransaction processTransaction(CardTransaction transaction) {
+    public void processTransaction(CardTransaction transaction) {
         log.info("Processing transaction: {}", transaction);
 
         cardLimitService.deductLimit(transaction.getCardId(), transaction.getAmount());
 
+        transaction.setId(UUID.randomUUID());
         transaction.setStatus(TransactionStatus.APPROVED);
 
-        // Save transaction
-        CardTransaction savedTransaction = transactionRepository.save(transaction);
+        try {
+            // Build the EventData object.
+            EventData eventData = EventDataBuilder.json(UUID.randomUUID(), "TransactionCreated", objectMapper.writeValueAsBytes(transaction)).build();
 
-        // Publish transaction event
-        eventPublisher.publishTransactionEvent(transaction);
+            // Append event to the "transaction-stream" stream.
+            eventStore.appendToStream("transaction-stream", eventData);
+        } catch (Exception e) {
+            log.error("Error publishing event", e);
+            throw new RuntimeException("Error publishing event", e);
+        }
 
-        return savedTransaction;
     }
 
     public CardTransaction processRefund(RefundRequest refundRequest) {
@@ -84,6 +96,5 @@ public class CardTransactionService {
 
         return updatedTransaction;
     }
-
 
 }

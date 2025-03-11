@@ -15,7 +15,6 @@ import java.util.UUID;
 @Data
 @Entity
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "card_transactions")
 public class CardTransaction {
@@ -49,11 +48,11 @@ public class CardTransaction {
     @Column(name = "dispute_reason")
     private String disputeReason;
 
-    @PrePersist
-    public void updateTransactionDate() {
-        if (transactionDate == null) {
-            transactionDate = LocalDateTime.now();
-        }
+    //add an empty constructor
+    public CardTransaction() {
+        this.id = UUID.randomUUID();
+        this.status = TransactionStatus.APPROVED;
+        this.transactionDate = LocalDateTime.now();
     }
 
 }

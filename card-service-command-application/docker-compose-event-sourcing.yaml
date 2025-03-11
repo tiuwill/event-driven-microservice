@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+#  mongo:
+#    image: mongo:latest
+#    container_name: card-service-mongo
+#    ports:
+#      - "27017:27017"
+
+#  card_eventstoredb:
+#    image: eventstore/eventstore:latest
+#    container_name: card-service-eventstoredb
+#    ports:
+#      - "2113:2113" # HTTP port for the UI and API
+#      - "1113:1113" # TCP port for client connections
+#    environment:
+#      - EVENTSTORE_DB_MEM_DB=True
+#      - EVENTSTORE_RUN_PROJECTIONS=All
+#      - EVENTSTORE_START_STANDARD_PROJECTIONS=True
+#      - EVENTSTORE_CLUSTER_SIZE=1 #for single node
+
+  rewards_db:
+    image: eventstore/eventstore:latest
+    container_name: rewards-eventstoredb
+    ports:
+      - "2114:2113" # Changed to 2114 HTTP port
+      - "1114:1113" # Changed to 1114 TCP port
+    environment:
+      - EVENTSTORE_MEM_DB=True # Corrected variable name
+      - EVENTSTORE_RUN_PROJECTIONS=All
+      - EVENTSTORE_START_STANDARD_PROJECTIONS=True
+      - EVENTSTORE_CLUSTER_SIZE=1 #for single node
+      - EVENTSTORE_INSECURE=true # New: Run in insecure mode

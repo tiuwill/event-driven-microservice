@@ -1,17 +1,15 @@
 package com.rewards.command.command.service;
 
 
-import com.cardservice.command.event.RefundEvent;
+import com.cardservice.command.event.DisputeEvent;
 import com.cardservice.command.event.TransactionEvent;
+import com.eventstore.dbclient.EventData;
+import com.eventstore.dbclient.EventDataBuilder;
 import com.eventstore.dbclient.EventStoreDBClient;
-import com.rewards.command.command.model.PurchaseEvent;
-import com.rewards.command.command.model.RewardPoints;
-import com.rewards.command.command.model.RollbackEvent;
-import com.rewards.command.command.model.Transaction;
-import com.rewards.command.command.producer.TotalRewardEventProducer;
-import com.rewards.command.command.producer.TransactionRewardEventProducer;
+import com.rewards.command.command.model.*;
 import com.rewards.command.command.repository.RewardPointsRepository;
 import com.rewards.command.command.repository.TransactionRepository;
+import com.rewards.command.command.util.JsonParserUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -29,8 +27,6 @@ public class RewardsService {
 
     private final RewardPointsRepository rewardPointsRepository;
     private final TransactionRepository transactionRepository;
-    private final TransactionRewardEventProducer transactionRewardEventProducer;
-    private final TotalRewardEventProducer totalRewardEventProducer;
     private final EventStoreDBClient eventStore;
 
     private static final BigDecimal POINTS_THRESHOLD = new BigDecimal("5.00");
@@ -65,12 +61,10 @@ public class RewardsService {
         );
         transactionRepository.save(transaction);
 
-        // Publish transaction.reward event
-        transactionRewardEventProducer.publishTransactionReward(transaction);
+        TransactionRewarded transactionRewarded = TransactionRewarded.fromRewardedTransaction(transaction);
+        EventData eventData = EventDataBuilder.json("TransactionRewarded", JsonParserUtil.parseObjectToJson(transactionRewarded)).build();
 
-        // Publish total.reward event
-        totalRewardEventProducer.publishTotalReward(rewardPoints);
-
+        eventStore.appendToStream("card-"+purchaseEvent.getCardId(), eventData);
         log.info("Purchase processed successfully. Points earned: {}", pointsEarned);
     }
 
@@ -78,14 +72,66 @@ public class RewardsService {
      * Processes a rollback event by reversing the points earned and updating the database
      */
     @Transactional
-    public void processRollback(TransactionEvent rollbackEvent) {
-        log.info("Processing rollback event: {}", rollbackEvent);
+    public void processDispute(TransactionDisputeEvent rollbackEvent) {
+        log.info("Processing dispute event: {}", rollbackEvent);
 
         // Find the transaction
-        Optional<Transaction> transactionOpt = transactionRepository.findById(UUID.fromString(rollbackEvent.getId()));
+        Optional<Transaction> transactionOpt = transactionRepository.findById(UUID.fromString(rollbackEvent.getTransactionId()));
 
         if (transactionOpt.isEmpty()) {
-            log.error("Transaction not found for rollback: {}", rollbackEvent.getId());
+            log.error("Transaction not found for dispute: {}", rollbackEvent.getTransactionId());
+            return;
+        }
+
+        Transaction transaction = transactionOpt.get();
+
+        // If already rolled back, do nothing
+        if (transaction.isRollback()) {
+            log.warn("Transaction already disputed: {}", transaction.getTransactionId());
+            return;
+        }
+
+        // Find reward points
+        Optional<RewardPoints> rewardPointsOpt = rewardPointsRepository.findByClientIdAndCardId(
+                transaction.getClientId(),
+                transaction.getCardId()
+        );
+
+        if (rewardPointsOpt.isEmpty()) {
+            log.error("Reward points not found to dispute: client={}, card={}",
+                    transaction.getClientId(),
+                    transaction.getCardId());
+            return;
+        }
+
+        RewardPoints rewardPoints = rewardPointsOpt.get();
+
+        // Subtract points
+        rewardPoints.subtractPoints(transaction.getPointsEarned());
+        rewardPointsRepository.save(rewardPoints);
+
+        // Mark transaction as rolled back
+        transaction.setRollback(true);
+        transactionRepository.save(transaction);
+
+        TransactionRewarded transactionRewarded = TransactionRewarded.fromRewardedTransaction(transaction);
+        EventData eventData = EventDataBuilder.json("TransactionRewarded", JsonParserUtil.parseObjectToJson(transactionRewarded)).build();
+
+        eventStore.appendToStream("card-"+rollbackEvent.getCardId(), eventData);
+
+
+        log.info("Transaction dispute processed successfully. Points reversed: {}", transaction.getPointsEarned());
+    }
+
+    @Transactional
+    public void processRefund(TransactionRefundEvent rollbackEvent) {
+        log.info("Processing refund event: {}", rollbackEvent);
+
+        // Find the transaction
+        Optional<Transaction> transactionOpt = transactionRepository.findById(UUID.fromString(rollbackEvent.getTransactionId()));
+
+        if (transactionOpt.isEmpty()) {
+            log.error("Transaction not found for refund: {}", rollbackEvent.getTransactionId());
             return;
         }
 
@@ -104,7 +150,7 @@ public class RewardsService {
         );
 
         if (rewardPointsOpt.isEmpty()) {
-            log.error("Reward points not found for rollback: client={}, card={}",
+            log.error("Reward points not found to refund: client={}, card={}",
                     transaction.getClientId(),
                     transaction.getCardId());
             return;
@@ -120,13 +166,13 @@ public class RewardsService {
         transaction.setRollback(true);
         transactionRepository.save(transaction);
 
-        // Publish total.reward event with updated balance
-        totalRewardEventProducer.publishTotalReward(rewardPoints);
+        TransactionRefundEvent transactionRewarded = TransactionRefundEvent.fromRewardedTransaction(transaction);
+        EventData eventData = EventDataBuilder.json("TransactionRefunded", JsonParserUtil.parseObjectToJson(transactionRewarded)).build();
 
-        // Publish transaction.reward event with rollback information
-        transactionRewardEventProducer.publishTransactionRollback(transaction);
+        eventStore.appendToStream("card-"+rollbackEvent.getCardId(), eventData);
 
-        log.info("Rollback processed successfully. Points reversed: {}", transaction.getPointsEarned());
+
+        log.info("Refund processed successfully. Points reversed: {}", transaction.getPointsEarned());
     }
 
     /**

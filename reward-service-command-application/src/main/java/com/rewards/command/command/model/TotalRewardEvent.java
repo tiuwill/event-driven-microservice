@@ -13,8 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TotalRewardEvent {
-    private UUID clientId;
-    private UUID cardId;
+    private String tra;
     private Integer totalPoints;
     private LocalDateTime timestamp;
 }

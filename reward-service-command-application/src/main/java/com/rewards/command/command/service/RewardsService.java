@@ -3,6 +3,7 @@ package com.rewards.command.command.service;
 
 import com.cardservice.command.event.RefundEvent;
 import com.cardservice.command.event.TransactionEvent;
+import com.eventstore.dbclient.EventStoreDBClient;
 import com.rewards.command.command.model.PurchaseEvent;
 import com.rewards.command.command.model.RewardPoints;
 import com.rewards.command.command.model.RollbackEvent;
@@ -30,6 +31,7 @@ public class RewardsService {
     private final TransactionRepository transactionRepository;
     private final TransactionRewardEventProducer transactionRewardEventProducer;
     private final TotalRewardEventProducer totalRewardEventProducer;
+    private final EventStoreDBClient eventStore;
 
     private static final BigDecimal POINTS_THRESHOLD = new BigDecimal("5.00");
 

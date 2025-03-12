@@ -1,26 +1,27 @@
 package com.cardservice.command.event;
 
-import com.cardservice.command.model.CardTransaction;
-import com.cardservice.command.model.TransactionStatus;
+import com.cardservice.command.model.RefundRequest;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
-public class RefundEvent extends TransactionEvent {
+@Getter
+@Setter
+@NoArgsConstructor
+public class RefundEvent {
 
-    public RefundEvent(String id, String cardId, String clientId, BigDecimal amount, String cnpj, LocalDateTime purchaseDate, String description) {
-        super(id, cardId, clientId, amount, cnpj, TransactionStatus.REFUNDED.name(), purchaseDate, description);
+    private String transactionId;
+    private String cardId;
+
+
+    private RefundEvent(String transactionId, String cardId) {
+        this.transactionId = transactionId;
+        this.cardId = cardId;
     }
 
-    public static RefundEvent fromCardTransaction(CardTransaction cardTransaction) {
-        return new RefundEvent(
-                cardTransaction.getId().toString(),
-                cardTransaction.getCardId().toString(),
-                cardTransaction.getCustomerId().toString(),
-                cardTransaction.getAmount(),
-                cardTransaction.getCnpj(),
-                cardTransaction.getTransactionDate(),
-                cardTransaction.getDescription()
-        );
+
+    public static RefundEvent createTransactionRefundedEventFrom(RefundRequest refundRequest) {
+        return new RefundEvent(refundRequest.getTransactionId(),refundRequest.getCardId());
     }
 }

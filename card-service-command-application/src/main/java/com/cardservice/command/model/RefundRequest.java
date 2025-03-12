@@ -7,4 +7,6 @@ import lombok.Data;
 public class RefundRequest {
     @NotNull
     private String transactionId;
+    private String cardId;
+
 }

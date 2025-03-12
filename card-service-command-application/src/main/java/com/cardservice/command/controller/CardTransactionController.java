@@ -34,14 +34,14 @@ public class CardTransactionController {
     @PostMapping("/refund")
     public ResponseEntity<CardTransaction> processRefund(@Valid @RequestBody RefundRequest refundRequest) {
         log.info("Received refund request: {}", refundRequest);
-        CardTransaction refundedTransaction = transactionService.processRefund(refundRequest);
-        return new ResponseEntity<>(refundedTransaction, HttpStatus.OK);
+        transactionService.processRefund(refundRequest);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/dispute")
     public ResponseEntity<CardTransaction> processDispute(@Valid @RequestBody DisputeRequest disputeRequest) {
         log.info("Received dispute request: {}", disputeRequest);
-        CardTransaction disputedTransaction = transactionService.processDispute(disputeRequest);
-        return new ResponseEntity<>(disputedTransaction, HttpStatus.OK);
+        transactionService.processDispute(disputeRequest);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

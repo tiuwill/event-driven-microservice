@@ -1,6 +1,7 @@
 package com.cardservice.command.event;
 
 import com.cardservice.command.model.CardTransaction;
+import com.cardservice.command.model.TransactionStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,6 +10,7 @@ import org.springframework.data.annotation.Id;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
@@ -25,16 +27,32 @@ public class TransactionEvent {
     private LocalDateTime purchaseDate;
     private String description;
 
-    public static TransactionEvent fromCardTransaction(CardTransaction cardTransaction) {
+    public static TransactionEvent createTransactionCreatedEventFrom(CardTransaction cardTransaction) {
+        return new TransactionEvent(
+                UUID.randomUUID().toString(),
+                cardTransaction.getCardId().toString(),
+                cardTransaction.getCustomerId().toString(),
+                cardTransaction.getAmount(),
+                cardTransaction.getCnpj(),
+                TransactionStatus.APPROVED.name(),
+                cardTransaction.getTransactionDate(),
+                cardTransaction.getDescription()
+        );
+    }
+
+
+    public static TransactionEvent createTransactionDisputedEventFrom(CardTransaction cardTransaction) {
         return new TransactionEvent(
                 cardTransaction.getId().toString(),
                 cardTransaction.getCardId().toString(),
                 cardTransaction.getCustomerId().toString(),
                 cardTransaction.getAmount(),
                 cardTransaction.getCnpj(),
-                cardTransaction.getStatus().name(),
+                TransactionStatus.DISPUTED.name(),
                 cardTransaction.getTransactionDate(),
                 cardTransaction.getDescription()
         );
     }
+
+
 }

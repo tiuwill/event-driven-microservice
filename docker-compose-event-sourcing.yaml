@@ -1,25 +1,7 @@
 version: '3.8'
 
 services:
-#  mongo:
-#    image: mongo:latest
-#    container_name: card-service-mongo
-#    ports:
-#      - "27017:27017"
-
-#  card_eventstoredb:
-#    image: eventstore/eventstore:latest
-#    container_name: card-service-eventstoredb
-#    ports:
-#      - "2113:2113" # HTTP port for the UI and API
-#      - "1113:1113" # TCP port for client connections
-#    environment:
-#      - EVENTSTORE_DB_MEM_DB=True
-#      - EVENTSTORE_RUN_PROJECTIONS=All
-#      - EVENTSTORE_START_STANDARD_PROJECTIONS=True
-#      - EVENTSTORE_CLUSTER_SIZE=1 #for single node
-
-  rewards_db:
+  rewards_db_eventstore:
     image: eventstore/eventstore:22.6.0-bionic
     container_name: rewards-eventstoredb
     ports:

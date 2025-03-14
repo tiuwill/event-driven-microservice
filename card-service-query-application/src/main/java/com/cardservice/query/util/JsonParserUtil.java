@@ -1,5 +1,6 @@
-package com.rewards.command.command.util;
+package com.cardservice.query.util;
 
+import com.cardservice.command.event.TransactionEvent;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;

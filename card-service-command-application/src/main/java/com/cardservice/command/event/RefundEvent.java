@@ -1,24 +1,17 @@
 package com.cardservice.command.event;
 
 import com.cardservice.command.model.RefundRequest;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class RefundEvent {
 
     private String transactionId;
     private String cardId;
 
-
-    private RefundEvent(String transactionId, String cardId) {
-        this.transactionId = transactionId;
-        this.cardId = cardId;
-    }
 
 
     public static RefundEvent createTransactionRefundedEventFrom(RefundRequest refundRequest) {

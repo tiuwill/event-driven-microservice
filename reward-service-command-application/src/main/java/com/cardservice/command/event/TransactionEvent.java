@@ -9,6 +9,7 @@ import org.springframework.data.annotation.Id;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,4 +24,5 @@ public class TransactionEvent {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private LocalDateTime purchaseDate;
     private String description;
+
 }

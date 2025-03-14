@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 import org.springframework.beans.factory.annotation.Value;
 
 @Configuration
-@EnableMongoRepositories(basePackages = "com.cardservice.repository")
+@EnableMongoRepositories(basePackages = "com.cardservice.query.repository")
 public class MongoConfig extends AbstractMongoClientConfiguration {
 
     @Value("${spring.data.mongodb.database}")

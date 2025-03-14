@@ -32,7 +32,7 @@ public class InvoiceViewData {
         private BigDecimal amount;
         private String description;
         private LocalDateTime transactionDate;
-        private String status; // For disputes: PENDING, APPROVED, REJECTED
+        private String status;
     }
 }
 

@@ -2,6 +2,7 @@ package com.rewards.command.command.service;
 
 
 import com.cardservice.command.event.DisputeEvent;
+import com.cardservice.command.event.RefundEvent;
 import com.cardservice.command.event.TransactionEvent;
 import com.eventstore.dbclient.EventData;
 import com.eventstore.dbclient.EventDataBuilder;
@@ -31,9 +32,7 @@ public class RewardsService {
 
     private static final BigDecimal POINTS_THRESHOLD = new BigDecimal("5.00");
 
-    /**
-     * Processes a purchase event by calculating points and updating the database
-     */
+
     @Transactional
     public void processPurchase(TransactionEvent purchaseEvent) {
         log.info("Processing purchase event: {}", purchaseEvent);
@@ -65,14 +64,13 @@ public class RewardsService {
         EventData eventData = EventDataBuilder.json("TransactionRewarded", JsonParserUtil.parseObjectToJson(transactionRewarded)).build();
 
         eventStore.appendToStream("card-"+purchaseEvent.getCardId(), eventData);
+        eventStore.appendToStream("card-transactions", eventData);
         log.info("Purchase processed successfully. Points earned: {}", pointsEarned);
     }
 
-    /**
-     * Processes a rollback event by reversing the points earned and updating the database
-     */
+
     @Transactional
-    public void processDispute(TransactionDisputeEvent rollbackEvent) {
+    public void processDispute(DisputeEvent rollbackEvent) {
         log.info("Processing dispute event: {}", rollbackEvent);
 
         // Find the transaction
@@ -114,17 +112,18 @@ public class RewardsService {
         transaction.setRollback(true);
         transactionRepository.save(transaction);
 
-        TransactionRewarded transactionRewarded = TransactionRewarded.fromRewardedTransaction(transaction);
-        EventData eventData = EventDataBuilder.json("TransactionRewarded", JsonParserUtil.parseObjectToJson(transactionRewarded)).build();
+        RewardRefundEvent transactionRewarded = RewardRefundEvent.fromRewardedTransaction(transaction);
+        EventData eventData = EventDataBuilder.json("RewardRolledBack", JsonParserUtil.parseObjectToJson(transactionRewarded)).build();
 
         eventStore.appendToStream("card-"+rollbackEvent.getCardId(), eventData);
+        eventStore.appendToStream("card-transactions", eventData);
 
 
         log.info("Transaction dispute processed successfully. Points reversed: {}", transaction.getPointsEarned());
     }
 
     @Transactional
-    public void processRefund(TransactionRefundEvent rollbackEvent) {
+    public void processRefund(RefundEvent rollbackEvent) {
         log.info("Processing refund event: {}", rollbackEvent);
 
         // Find the transaction
@@ -166,25 +165,22 @@ public class RewardsService {
         transaction.setRollback(true);
         transactionRepository.save(transaction);
 
-        TransactionRefundEvent transactionRewarded = TransactionRefundEvent.fromRewardedTransaction(transaction);
-        EventData eventData = EventDataBuilder.json("TransactionRefunded", JsonParserUtil.parseObjectToJson(transactionRewarded)).build();
+        RewardRefundEvent transactionRewarded = RewardRefundEvent.fromRewardedTransaction(transaction);
+        EventData eventData = EventDataBuilder.json("RewardRolledBack", JsonParserUtil.parseObjectToJson(transactionRewarded)).build();
 
         eventStore.appendToStream("card-"+rollbackEvent.getCardId(), eventData);
+        eventStore.appendToStream("card-transactions", eventData);
 
 
         log.info("Refund processed successfully. Points reversed: {}", transaction.getPointsEarned());
     }
 
-    /**
-     * Calculate points based on purchase amount (1 point for every 5 reais)
-     */
+
     private Integer calculatePoints(BigDecimal amount) {
         return amount.divide(POINTS_THRESHOLD, 0, RoundingMode.DOWN).intValue();
     }
 
-    /**
-     * Get existing reward points or create new ones if they don't exist
-     */
+
     private RewardPoints getOrCreateRewardPoints(UUID clientId, UUID cardId) {
         return rewardPointsRepository.findByClientIdAndCardId(clientId, cardId)
                 .orElseGet(() -> {

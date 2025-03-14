@@ -18,11 +18,9 @@ public class InvoiceController {
     private final InvoiceViewRepository invoiceViewRepository;
 
     @GetMapping
-    public ResponseEntity<InvoiceViewData> getInvoice(
-            @RequestParam String cardId,
-            @RequestParam String clientId) {
+    public ResponseEntity<InvoiceViewData> getInvoice(@RequestParam String cardId) {
 
-        return invoiceViewRepository.findByCardIdAndClientId(cardId, clientId)
+        return invoiceViewRepository.findByCardId(cardId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }

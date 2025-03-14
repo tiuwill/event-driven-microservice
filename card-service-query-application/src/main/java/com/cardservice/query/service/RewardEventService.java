@@ -2,16 +2,14 @@ package com.cardservice.query.service;
 
 
 import com.cardservice.query.dto.InvoiceViewData;
-import com.cardservice.query.model.Reward;
+import com.cardservice.query.event.RewardRefundEvent;
 import com.cardservice.query.repository.InvoiceViewRepository;
 import com.rewards.command.command.model.TransactionRewardEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.Optional;
 
 @Service
@@ -19,10 +17,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class RewardEventService {
 
-    //TODO tem bug no total da fatura, esta somenado errado o total.
     private final InvoiceViewRepository invoiceViewRepository;
 
-    @KafkaListener(topics = "${kafka.topics.transaction-reward}")
     public void consumeTransactionRewardEvent(TransactionRewardEvent reward) {
         log.info("Received transaction reward event: {}", reward);
 
@@ -30,11 +26,11 @@ public class RewardEventService {
         int retryCount = 0;
         while (optionalInvoiceView.isEmpty() && retryCount < 3) {
             optionalInvoiceView = invoiceViewRepository
-                    .findByCardIdAndClientId(reward.getCardId(), reward.getClientId());
+                    .findByCardId(reward.getCardId());
             if (optionalInvoiceView.isEmpty()) {
-                log.warn("Invoice view not found for card: {}, client: {}, retrying...", reward.getCardId(), reward.getClientId());
+                log.warn("Invoice view not found for card: {}, retrying...", reward.getCardId());
                 try {
-                    Thread.sleep(1000); // Wait for 1 second before retrying
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
@@ -47,30 +43,29 @@ public class RewardEventService {
             if(invoiceView.getTotalRewardPoints() == null) {
                 invoiceView.setTotalRewardPoints(0);
             }
-            invoiceView.setTotalRewardPoints(invoiceView.getTotalRewardPoints() + reward.getPointsEarned());
-            invoiceView.setLastUpdateDate(reward.getTimestamp());
+            invoiceView.setTotalRewardPoints(invoiceView.getTotalRewardPoints() + reward.getAmount());
+            invoiceView.setLastUpdateDate(reward.getRewardedTime());
             invoiceViewRepository.save(invoiceView);
-            log.info("Incremented reward points for card: {}, client: {}", reward.getCardId(), reward.getClientId());
+            log.info("Incremented reward points for card: {}", reward.getCardId());
         } else {
-            log.warn("No invoice view found for card: {}, client: {}", reward.getCardId(), reward.getClientId());
+            log.warn("No invoice view found for card: {}", reward.getCardId());
         }
     }
 
-    @KafkaListener(topics = "${kafka.topics.transaction-rollback-reward}")
-    public void consumeTransactionRollbackRewardEvent(TransactionRewardEvent reward) {
+    public void consumeTransactionRollbackRewardEvent(RewardRefundEvent reward) {
         log.info("Received transaction rollback reward event: {}", reward);
 
         InvoiceViewData invoiceView = invoiceViewRepository
-                .findByCardIdAndClientId(reward.getCardId(), reward.getClientId())
+                .findByCardId(reward.getCardId())
                 .orElse(null);
 
         if (invoiceView != null) {
-            invoiceView.setTotalRewardPoints(invoiceView.getTotalRewardPoints() - reward.getPointsEarned());
-            invoiceView.setLastUpdateDate(reward.getTimestamp());
+            invoiceView.setTotalRewardPoints(invoiceView.getTotalRewardPoints() - reward.getAmount());
+            invoiceView.setLastUpdateDate(reward.getRollbackTime());
             invoiceViewRepository.save(invoiceView);
-            log.info("Decremented reward points for card: {}, client: {}", reward.getCardId(), reward.getClientId());
+            log.info("Decremented reward points for card: {}", reward.getCardId());
         } else {
-            log.warn("No invoice view found for card: {}, client: {}", reward.getCardId(), reward.getClientId());
+            log.warn("No invoice view found for card: {}", reward.getCardId());
         }
     }
 

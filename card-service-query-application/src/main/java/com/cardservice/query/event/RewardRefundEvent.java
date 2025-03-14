@@ -1,4 +1,4 @@
-package com.rewards.command.command.model;
+package com.cardservice.query.event;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,10 +11,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Setter
-public class TransactionRewardRolledBack {
+public class RewardRefundEvent {
     private String transactionId;
-    private Integer rolledBackAmount;
+    private Integer amount;
+    private String cardId;
     private LocalDateTime rollbackTime;
-
-    //TODO voltar pro reward service e continuar metodo de rollback
 }

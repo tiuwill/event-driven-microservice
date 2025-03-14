@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface InvoiceViewRepository extends MongoRepository<InvoiceViewData, String> {
-    Optional<InvoiceViewData> findByCardIdAndClientId(String cardId, String clientId);
+    Optional<InvoiceViewData> findByCardId(String cardId);
 }

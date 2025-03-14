@@ -1,13 +1,15 @@
 package com.cardservice.command.event;
 
+import com.cardservice.query.util.JsonParserUtil;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
 
 @Data
 @NoArgsConstructor
@@ -23,4 +25,5 @@ public class TransactionEvent {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private LocalDateTime purchaseDate;
     private String description;
+
 }

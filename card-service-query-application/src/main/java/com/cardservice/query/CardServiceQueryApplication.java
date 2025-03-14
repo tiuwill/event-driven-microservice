@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan({"com.cardservice.query.repository", "com.cardservice.query.service", "com.cardservice.query.controller"})
+@ComponentScan({"com.cardservice.query.repository", "com.cardservice.query.service", "com.cardservice.query.controller", "com.cardservice.query.config"})
 public class CardServiceQueryApplication {
 
 	public static void main(String[] args) {

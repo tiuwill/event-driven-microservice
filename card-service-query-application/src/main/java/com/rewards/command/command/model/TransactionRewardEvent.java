@@ -1,5 +1,6 @@
 package com.rewards.command.command.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,10 +15,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class TransactionRewardEvent {
     private String transactionId;
-    private String clientId;
     private String cardId;
-    private BigDecimal amount;
-    private Integer pointsEarned;
-    private LocalDateTime timestamp;
-    private boolean rollback;
+    private Integer amount;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    private LocalDateTime rewardedTime;
 }

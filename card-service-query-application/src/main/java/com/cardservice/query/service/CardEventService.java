@@ -4,17 +4,15 @@ package com.cardservice.query.service;
 import com.cardservice.command.event.DisputeEvent;
 import com.cardservice.command.event.RefundEvent;
 import com.cardservice.command.event.TransactionEvent;
+import com.cardservice.command.event.TransactionStatus;
 import com.cardservice.query.dto.CardDetailViewData;
 import com.cardservice.query.dto.InvoiceViewData;
-import com.cardservice.query.model.Dispute;
-import com.cardservice.query.model.Refund;
 import com.cardservice.query.repository.CardDetailViewRepository;
 import com.cardservice.query.repository.InvoiceViewRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
 
-import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -29,7 +27,6 @@ public class CardEventService {
     private final CardDetailViewRepository cardDetailViewRepository;
     private final InvoiceViewRepository invoiceViewRepository;
 
-    @KafkaListener(topics = "${kafka.topics.purchase-event}")
     public void consumePurchaseEvent(TransactionEvent purchase) {
         log.info("Received purchase event: {}", purchase);
         updateCardDetailView(purchase);
@@ -62,7 +59,7 @@ public class CardEventService {
 
     private void updateInvoiceView(TransactionEvent purchase) {
         InvoiceViewData invoiceView = invoiceViewRepository
-                .findByCardIdAndClientId(purchase.getCardId(), purchase.getClientId())
+                .findByCardId(purchase.getCardId())
                 .orElse(new InvoiceViewData());
 
         if (invoiceView.getTransactions() == null) {
@@ -91,35 +88,26 @@ public class CardEventService {
         invoiceViewRepository.save(invoiceView);
     }
 
-    @KafkaListener(topics = "${kafka.topics.refund-event}", groupId = "${spring.kafka.consumer.group-id}")
+
     public void consumeRefundEvent(RefundEvent refund) {
         log.info("Received refund event: {}", refund);
 
         InvoiceViewData invoiceView = invoiceViewRepository
-                .findByCardIdAndClientId(refund.getCardId(), refund.getClientId())
+                .findByCardId(refund.getCardId())
                 .orElse(new InvoiceViewData());
 
         if (CollectionUtils.isEmpty(invoiceView.getTransactions())) {
-            log.warn("No transactions found for cardId: {} and clientId: {}", refund.getCardId(), refund.getClientId());
+            log.warn("No transactions found for cardId: {} and clientId: {}", refund.getCardId());
             return;
         }
 
-        boolean transactionUpdated = false;
         for (InvoiceViewData.TransactionDetail transaction : invoiceView.getTransactions()) {
-            if (transaction.getId().equals(refund.getId())) {
-                // Update existing transaction
-                transaction.setAmount(refund.getAmount());
-                transaction.setDescription("Refund: " + refund.getDescription());
-                transaction.setTransactionDate(refund.getPurchaseDate());
-                transaction.setStatus(refund.getStatus());
-                transactionUpdated = true;
+            if (transaction.getId().equals(refund.getTransactionId())) {
+                transaction.setDescription("Refund: " + transaction.getDescription());
+                transaction.setTransactionDate(LocalDateTime.now());
+                transaction.setStatus(TransactionStatus.REFUNDED.name());
                 break;
             }
-        }
-
-        if (!transactionUpdated) {
-            log.warn("Transaction with id {} not found in invoice for cardId: {} and clientId: {}", refund.getId(), refund.getCardId(), refund.getClientId());
-            return;
         }
 
         updateTotal(invoiceView);
@@ -127,37 +115,25 @@ public class CardEventService {
         invoiceViewRepository.save(invoiceView);
     }
 
-    @KafkaListener(topics = "${kafka.topics.dispute-event}", groupId = "${spring.kafka.consumer.group-id}")
     public void consumeDisputeEvent(DisputeEvent dispute) {
         log.info("Received dispute event: {}", dispute);
 
         InvoiceViewData invoiceView = invoiceViewRepository
-                .findByCardIdAndClientId(dispute.getCardId(), dispute.getClientId())
+                .findByCardId(dispute.getCardId())
                 .orElse(new InvoiceViewData());
 
         if (CollectionUtils.isEmpty(invoiceView.getTransactions())) {
-            log.warn("No transactions found for cardId: {} and clientId: {}", dispute.getCardId(), dispute.getClientId());
+            log.warn("No transactions found for cardId: {}", dispute.getCardId());
             return;
         }
 
-        boolean transactionUpdated = false;
         for (InvoiceViewData.TransactionDetail transaction : invoiceView.getTransactions()) {
-            if (transaction.getId().equals(dispute.getId())) {
-                // Update existing transaction
-                transaction.setDescription("Disputed: " + dispute.getDescription());
-                transaction.setTransactionDate(dispute.getPurchaseDate());
-                transaction.setStatus(dispute.getStatus());
-                if ("APPROVED".equals(dispute.getStatus())) {
-                    transaction.setAmount(dispute.getAmount());
-                }
-                transactionUpdated = true;
+            if (transaction.getId().equals(dispute.getTransactionId())) {
+                transaction.setDescription("Disputed: " + transaction.getDescription());
+                transaction.setTransactionDate(LocalDateTime.now());
+                transaction.setStatus(TransactionStatus.DISPUTED.name());
                 break;
             }
-        }
-
-        if (!transactionUpdated) {
-            log.warn("Transaction with id {} not found in invoice for cardId: {} and clientId: {}", dispute.getId(), dispute.getCardId(), dispute.getClientId());
-            return;
         }
 
         updateTotal(invoiceView);
@@ -168,7 +144,7 @@ public class CardEventService {
     private static void updateTotal(InvoiceViewData invoiceView) {
         BigDecimal totalAmount = BigDecimal.ZERO;
         for (InvoiceViewData.TransactionDetail transaction : invoiceView.getTransactions()) {
-            if(transaction.getStatus().equals("APPROVED"))
+            if(TransactionStatus.APPROVED.name().equals(transaction.getStatus()))
                 totalAmount = totalAmount.add(transaction.getAmount());
         }
         invoiceView.setTotalAmount(totalAmount);

@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.rewards.command</groupId>
-	<artifactId>reward-service</artifactId>
+	<artifactId>reward-service-command-application</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>reward-service</name>
 	<description>Serviço de cálculo de pontos</description>

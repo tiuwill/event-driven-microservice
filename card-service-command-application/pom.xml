@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.cardservice</groupId>
-	<artifactId>card-service</artifactId>
+	<artifactId>card-service-command-application</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>card-service-command-application</name>
 	<description>Credit Card Service CQRS example</description>

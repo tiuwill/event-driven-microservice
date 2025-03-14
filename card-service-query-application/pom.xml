@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.cardservice</groupId>
-	<artifactId>CardServiceQueryApplication</artifactId>
+	<artifactId>card-service-query-application</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>CardServiceQueryApplication</name>
 	<description>Card Service Quer Applicaion</description>

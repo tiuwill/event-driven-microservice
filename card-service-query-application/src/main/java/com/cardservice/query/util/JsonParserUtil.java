@@ -1,6 +1,5 @@
 package com.cardservice.query.util;
 
-import com.cardservice.command.event.TransactionEvent;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +14,6 @@ public class JsonParserUtil {
     }
 
     private JsonParserUtil() {
-        // Private constructor to prevent instantiation of this utility class.
         throw new IllegalStateException("Utility class");
     }
 

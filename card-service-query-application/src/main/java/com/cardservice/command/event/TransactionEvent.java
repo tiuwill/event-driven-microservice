@@ -1,9 +1,6 @@
 package com.cardservice.command.event;
 
-import com.cardservice.query.util.JsonParserUtil;
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 

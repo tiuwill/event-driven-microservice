@@ -40,4 +40,19 @@ public class TransactionEvent {
         );
     }
 
+
+    public static TransactionEvent createTransactionDisputedEventFrom(CardTransaction cardTransaction) {
+        return new TransactionEvent(
+                cardTransaction.getId().toString(),
+                cardTransaction.getCardId().toString(),
+                cardTransaction.getCustomerId().toString(),
+                cardTransaction.getAmount(),
+                cardTransaction.getCnpj(),
+                TransactionStatus.DISPUTED.name(),
+                cardTransaction.getTransactionDate(),
+                cardTransaction.getDescription()
+        );
+    }
+
+
 }

@@ -8,17 +8,10 @@ import com.cardservice.query.service.CardEventService;
 import com.cardservice.query.service.RewardEventService;
 import com.cardservice.query.util.JsonParserUtil;
 import com.eventstore.dbclient.*;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rewards.command.command.model.TransactionRewardEvent;
 import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
-import org.reactivestreams.Publisher;
-import org.reactivestreams.Subscriber;
 import org.springframework.stereotype.Service;
-
-import java.nio.charset.StandardCharsets;
 
 @Service
 @AllArgsConstructor
@@ -28,8 +21,6 @@ public class EventStoreConsumerService {
     private static final String STREAM_NAME = "card-transactions"; // Change as needed
     private final CardEventService cardEventService;
     private final RewardEventService rewardEventService;
-
-
 
     @PostConstruct
     public void startSubscription() {
@@ -53,14 +44,10 @@ public class EventStoreConsumerService {
                             return;
                         }
                     }
-
-//                    JsonParserUtil.readValue(eventData, TransactionEvent.class);
                 }
-            }).get(); // Wait for subscription
+            }).get();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
 }

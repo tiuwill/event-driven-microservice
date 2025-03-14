@@ -25,10 +25,6 @@ public class CardLimitService {
         CardLimit cardLimit = cardLimitRepository.findById(cardId)
                 .orElseThrow(() -> new RuntimeException("Card limit not found for card ID: " + cardId));
 
-//        if (cardLimit.getAvailableLimit().compareTo(amount) < 0) {
-//            throw new RuntimeException("Insufficient available limit for card ID: " + cardId);
-//        }
-
         cardLimit.setAvailableLimit(cardLimit.getAvailableLimit().subtract(amount));
         cardLimit.setLastUpdated(LocalDateTime.now());
 

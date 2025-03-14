@@ -27,19 +27,16 @@ public class RewardPoints {
     @Column(nullable = false)
     private Integer totalPoints;
 
-    // Constructor for creating new reward points
     public RewardPoints(UUID clientId, UUID cardId) {
         this.clientId = clientId;
         this.cardId = cardId;
         this.totalPoints = 0;
     }
 
-    // Method to add points
     public void addPoints(Integer points) {
         this.totalPoints += points;
     }
 
-    // Method to subtract points
     public void subtractPoints(Integer points) {
         this.totalPoints -= points;
         if (this.totalPoints < 0) {

@@ -41,7 +41,7 @@ public class EventStoreConsumerService {
                         default -> {}
                     }
                 }
-            }).get(); // Wait for subscription
+            }).get();
         } catch (Exception e) {
             log.error("Error starting subscription: {}", e.getMessage());
             throw new RuntimeException("Error starting subscription", e);

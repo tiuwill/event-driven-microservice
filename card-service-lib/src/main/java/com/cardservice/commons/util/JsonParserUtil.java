@@ -1,13 +1,16 @@
-package com.rewards.command.command.util;
+package com.cardservice.commons.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-@Slf4j
 public class JsonParserUtil {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
+
+    private static final Logger log = LogManager.getLogger(JsonParserUtil.class);
+
 
     static {
         objectMapper.registerModule(new JavaTimeModule());

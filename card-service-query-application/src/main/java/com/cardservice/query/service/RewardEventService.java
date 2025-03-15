@@ -1,10 +1,10 @@
 package com.cardservice.query.service;
 
 
+import com.cardservice.commons.event.TransactionRewardEvent;
 import com.cardservice.query.dto.InvoiceViewData;
-import com.cardservice.query.event.RewardRefundEvent;
+import com.cardservice.commons.event.RewardRefundEvent;
 import com.cardservice.query.repository.InvoiceViewRepository;
-import com.rewards.command.command.model.TransactionRewardEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

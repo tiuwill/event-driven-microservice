@@ -1,14 +1,14 @@
 package com.cardservice.query.repository;
 
-import com.cardservice.command.event.DisputeEvent;
-import com.cardservice.command.event.RefundEvent;
-import com.cardservice.command.event.TransactionEvent;
-import com.cardservice.query.event.RewardRefundEvent;
+import com.cardservice.commons.event.DisputeEvent;
+import com.cardservice.commons.event.RefundEvent;
+import com.cardservice.commons.event.TransactionEvent;
+import com.cardservice.commons.event.TransactionRewardEvent;
+import com.cardservice.commons.util.JsonParserUtil;
+import com.cardservice.commons.event.RewardRefundEvent;
 import com.cardservice.query.service.CardEventService;
 import com.cardservice.query.service.RewardEventService;
-import com.cardservice.query.util.JsonParserUtil;
 import com.eventstore.dbclient.*;
-import com.rewards.command.command.model.TransactionRewardEvent;
 import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;

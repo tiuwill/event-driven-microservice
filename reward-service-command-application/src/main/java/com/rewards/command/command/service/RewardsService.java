@@ -1,16 +1,19 @@
 package com.rewards.command.command.service;
 
 
-import com.cardservice.command.event.DisputeEvent;
-import com.cardservice.command.event.RefundEvent;
-import com.cardservice.command.event.TransactionEvent;
+
+import com.cardservice.commons.event.DisputeEvent;
+import com.cardservice.commons.event.RefundEvent;
+import com.cardservice.commons.event.RewardRefundEvent;
+import com.cardservice.commons.event.TransactionEvent;
+import com.cardservice.commons.util.JsonParserUtil;
 import com.eventstore.dbclient.EventData;
 import com.eventstore.dbclient.EventDataBuilder;
 import com.eventstore.dbclient.EventStoreDBClient;
+import com.rewards.command.command.mapper.RewardRefundEventMapper;
 import com.rewards.command.command.model.*;
 import com.rewards.command.command.repository.RewardPointsRepository;
 import com.rewards.command.command.repository.TransactionRepository;
-import com.rewards.command.command.util.JsonParserUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -112,7 +115,7 @@ public class RewardsService {
         transaction.setRollback(true);
         transactionRepository.save(transaction);
 
-        RewardRefundEvent transactionRewarded = RewardRefundEvent.fromRewardedTransaction(transaction);
+        RewardRefundEvent transactionRewarded = RewardRefundEventMapper.fromRewardedTransaction(transaction);
         EventData eventData = EventDataBuilder.json("RewardRolledBack", JsonParserUtil.parseObjectToJson(transactionRewarded)).build();
 
         eventStore.appendToStream("card-"+rollbackEvent.getCardId(), eventData);
@@ -165,7 +168,7 @@ public class RewardsService {
         transaction.setRollback(true);
         transactionRepository.save(transaction);
 
-        RewardRefundEvent transactionRewarded = RewardRefundEvent.fromRewardedTransaction(transaction);
+        RewardRefundEvent transactionRewarded = RewardRefundEventMapper.fromRewardedTransaction(transaction);
         EventData eventData = EventDataBuilder.json("RewardRolledBack", JsonParserUtil.parseObjectToJson(transactionRewarded)).build();
 
         eventStore.appendToStream("card-"+rollbackEvent.getCardId(), eventData);

@@ -1,4 +1,4 @@
-package com.cardservice.command.event;
+package com.cardservice.commons.event;
 
 public enum TransactionStatus {
     APPROVED,

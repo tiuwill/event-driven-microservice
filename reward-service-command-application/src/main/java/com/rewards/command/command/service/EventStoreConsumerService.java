@@ -1,13 +1,13 @@
 package com.rewards.command.command.service;
 
-import com.cardservice.command.event.DisputeEvent;
-import com.cardservice.command.event.RefundEvent;
-import com.cardservice.command.event.TransactionEvent;
+import com.cardservice.commons.event.DisputeEvent;
+import com.cardservice.commons.event.RefundEvent;
+import com.cardservice.commons.event.TransactionEvent;
+import com.cardservice.commons.util.JsonParserUtil;
 import com.eventstore.dbclient.EventStoreDBClient;
 import com.eventstore.dbclient.ResolvedEvent;
 import com.eventstore.dbclient.Subscription;
 import com.eventstore.dbclient.SubscriptionListener;
-import com.rewards.command.command.util.JsonParserUtil;
 import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

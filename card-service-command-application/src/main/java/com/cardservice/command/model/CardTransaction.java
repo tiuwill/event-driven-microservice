@@ -1,5 +1,6 @@
 package com.cardservice.command.model;
 
+import com.cardservice.commons.event.TransactionStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

@@ -68,6 +68,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>com.cardservice.commons</groupId>
+			<artifactId>card-service-commons</artifactId>
+			<version>1.0T</version>
+		</dependency>
+
+		<dependency>
 			<groupId>com.eventstore</groupId>
 			<artifactId>db-client-java</artifactId>
 			<version>5.4.4</version>

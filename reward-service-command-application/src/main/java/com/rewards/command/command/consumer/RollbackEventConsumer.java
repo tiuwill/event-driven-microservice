@@ -1,8 +1,7 @@
 package com.rewards.command.command.consumer;
 
-import com.cardservice.command.event.DisputeEvent;
-import com.cardservice.command.event.RefundEvent;
-import com.rewards.command.command.model.RollbackEvent;
+import com.cardservice.commons.event.DisputeEvent;
+import com.cardservice.commons.event.RefundEvent;
 import com.rewards.command.command.service.RewardsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

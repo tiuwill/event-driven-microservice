@@ -1,13 +1,11 @@
 package com.cardservice.query.service;
 
 
-import com.cardservice.command.event.DisputeEvent;
-import com.cardservice.command.event.RefundEvent;
-import com.cardservice.command.event.TransactionEvent;
+import com.cardservice.commons.event.DisputeEvent;
+import com.cardservice.commons.event.RefundEvent;
+import com.cardservice.commons.event.TransactionEvent;
 import com.cardservice.query.dto.CardDetailViewData;
 import com.cardservice.query.dto.InvoiceViewData;
-import com.cardservice.query.model.Dispute;
-import com.cardservice.query.model.Refund;
 import com.cardservice.query.repository.CardDetailViewRepository;
 import com.cardservice.query.repository.InvoiceViewRepository;
 import lombok.RequiredArgsConstructor;

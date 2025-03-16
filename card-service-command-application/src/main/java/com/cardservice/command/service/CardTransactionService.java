@@ -6,8 +6,8 @@ import com.cardservice.command.event.EventPublisher;
 import com.cardservice.command.model.CardTransaction;
 import com.cardservice.command.model.DisputeRequest;
 import com.cardservice.command.model.RefundRequest;
-import com.cardservice.command.model.TransactionStatus;
 import com.cardservice.command.repository.CardTransactionRepository;
+import com.cardservice.commons.event.TransactionStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,13 +19,11 @@ import java.util.UUID;
 public class CardTransactionService {
 
     private final CardTransactionRepository transactionRepository;
-    private final CardLimitService cardLimitService;
     private final EventPublisher eventPublisher;
 
     public CardTransaction processTransaction(CardTransaction transaction) {
         log.info("Processing transaction: {}", transaction);
 
-        cardLimitService.deductLimit(transaction.getCardId(), transaction.getAmount());
 
         transaction.setStatus(TransactionStatus.APPROVED);
 
@@ -50,9 +48,6 @@ public class CardTransactionService {
 
         // Update transaction status
         transaction.setStatus(TransactionStatus.REFUNDED);
-
-        // Increase available limit
-        cardLimitService.increaseLimit(transaction.getCardId(), transaction.getAmount());
 
         // Save updated transaction
         CardTransaction updatedTransaction = transactionRepository.save(transaction);

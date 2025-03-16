@@ -1,13 +1,9 @@
 package com.rewards.command.command.service;
 
 
-import com.cardservice.command.event.RefundEvent;
-import com.cardservice.command.event.TransactionEvent;
-import com.rewards.command.command.model.PurchaseEvent;
+import com.cardservice.commons.event.TransactionEvent;
 import com.rewards.command.command.model.RewardPoints;
-import com.rewards.command.command.model.RollbackEvent;
 import com.rewards.command.command.model.Transaction;
-import com.rewards.command.command.producer.TotalRewardEventProducer;
 import com.rewards.command.command.producer.TransactionRewardEventProducer;
 import com.rewards.command.command.repository.RewardPointsRepository;
 import com.rewards.command.command.repository.TransactionRepository;
@@ -29,7 +25,6 @@ public class RewardsService {
     private final RewardPointsRepository rewardPointsRepository;
     private final TransactionRepository transactionRepository;
     private final TransactionRewardEventProducer transactionRewardEventProducer;
-    private final TotalRewardEventProducer totalRewardEventProducer;
 
     private static final BigDecimal POINTS_THRESHOLD = new BigDecimal("5.00");
 
@@ -65,9 +60,6 @@ public class RewardsService {
 
         // Publish transaction.reward event
         transactionRewardEventProducer.publishTransactionReward(transaction);
-
-        // Publish total.reward event
-        totalRewardEventProducer.publishTotalReward(rewardPoints);
 
         log.info("Purchase processed successfully. Points earned: {}", pointsEarned);
     }
@@ -117,9 +109,6 @@ public class RewardsService {
         // Mark transaction as rolled back
         transaction.setRollback(true);
         transactionRepository.save(transaction);
-
-        // Publish total.reward event with updated balance
-        totalRewardEventProducer.publishTotalReward(rewardPoints);
 
         // Publish transaction.reward event with rollback information
         transactionRewardEventProducer.publishTransactionRollback(transaction);

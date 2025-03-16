@@ -1,6 +1,12 @@
 package com.cardservice.command.event;
 
+import com.cardservice.command.mapper.DisputeEventMapper;
+import com.cardservice.command.mapper.RefundEventMapper;
+import com.cardservice.command.mapper.TransactionEventMapper;
 import com.cardservice.command.model.CardTransaction;
+import com.cardservice.commons.event.DisputeEvent;
+import com.cardservice.commons.event.RefundEvent;
+import com.cardservice.commons.event.TransactionEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,7 +37,7 @@ public class EventPublisher {
         log.info("Publishing transaction event: {}", transaction);
 
         Message<TransactionEvent> message = MessageBuilder
-                .withPayload(TransactionEvent.fromCardTransaction(transaction))
+                .withPayload(TransactionEventMapper.fromCardTransaction(transaction))
                 .setHeader(KafkaHeaders.TOPIC, transactionTopic)
                 .build();
 
@@ -42,7 +48,7 @@ public class EventPublisher {
         log.info("Publishing refund event: {}", event);
 
         Message<RefundEvent> message = MessageBuilder
-                .withPayload(RefundEvent.fromCardTransaction(event))
+                .withPayload(RefundEventMapper.fromCardTransaction(event))
                 .setHeader(KafkaHeaders.TOPIC, refundTopic)
                 .build();
 
@@ -53,7 +59,7 @@ public class EventPublisher {
         log.info("Publishing dispute event: {}", event);
 
         Message<DisputeEvent> message = MessageBuilder
-                .withPayload(DisputeEvent.fromCardTransaction(event))
+                .withPayload(DisputeEventMapper.fromCardTransaction(event))
                 .setHeader(KafkaHeaders.TOPIC, disputeTopic)
                 .build();
 

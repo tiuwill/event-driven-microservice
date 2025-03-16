@@ -1,7 +1,6 @@
 package com.rewards.command.command.consumer;
 
-import com.cardservice.command.event.TransactionEvent;
-import com.rewards.command.command.model.PurchaseEvent;
+import com.cardservice.commons.event.TransactionEvent;
 import com.rewards.command.command.service.RewardsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,7 +1,8 @@
 package com.rewards.command.command.producer;
 
+import com.cardservice.commons.event.TransactionRewardEventBuilder;
 import com.rewards.command.command.model.Transaction;
-import com.rewards.command.command.model.TransactionRewardEvent;
+import com.cardservice.commons.event.TransactionRewardEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,14 +23,14 @@ public class TransactionRewardEventProducer {
     private String transactionRewardRollbackTopic;
 
     public void publishTransactionReward(Transaction transaction) {
-        TransactionRewardEvent event = TransactionRewardEvent.builder()
-                .transactionId(transaction.getTransactionId().toString())
-                .clientId(transaction.getClientId().toString())
-                .cardId(transaction.getCardId().toString())
-                .amount(transaction.getAmount())
-                .pointsEarned(transaction.getPointsEarned())
-                .timestamp(transaction.getTimestamp())
-                .rollback(false)
+        TransactionRewardEvent event = new TransactionRewardEventBuilder()
+                .withTransactionId(transaction.getTransactionId().toString())
+                .withClientId(transaction.getClientId().toString())
+                .withCardId(transaction.getCardId().toString())
+                .withAmount(transaction.getAmount())
+                .withPointsEarned(transaction.getPointsEarned())
+                .withTimestamp(transaction.getTimestamp())
+                .withRollback(false)
                 .build();
 
         kafkaTemplate.send(transactionRewardTopic, transaction.getTransactionId().toString(), event);
@@ -37,14 +38,14 @@ public class TransactionRewardEventProducer {
     }
 
     public void publishTransactionRollback(Transaction transaction) {
-        TransactionRewardEvent event = TransactionRewardEvent.builder()
-                .transactionId(transaction.getTransactionId().toString())
-                .clientId(transaction.getClientId().toString())
-                .cardId(transaction.getCardId().toString())
-                .amount(transaction.getAmount())
-                .pointsEarned(transaction.getPointsEarned())
-                .timestamp(transaction.getTimestamp())
-                .rollback(true)
+        TransactionRewardEvent event = new TransactionRewardEventBuilder()
+                .withTransactionId(transaction.getTransactionId().toString())
+                .withClientId(transaction.getClientId().toString())
+                .withCardId(transaction.getCardId().toString())
+                .withAmount(transaction.getAmount())
+                .withPointsEarned(transaction.getPointsEarned())
+                .withTimestamp(transaction.getTimestamp())
+                .withRollback(true)
                 .build();
 
         kafkaTemplate.send(transactionRewardRollbackTopic, transaction.getTransactionId().toString(), event);

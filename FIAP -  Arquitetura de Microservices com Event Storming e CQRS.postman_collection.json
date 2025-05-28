@@ -1,0 +1,366 @@
+{
+	"info": {
+		"_postman_id": "2e8eafe2-189d-4400-a91e-315afe5d66a0",
+		"name": "FIAP -  Arquitetura de Microservices com Event Storming e CQRS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "10697631"
+	},
+	"item": [
+		{
+			"name": "Card service command - eventsourcing",
+			"item": [
+				{
+					"name": "Dispute Transaction - event sourcing",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"transactionId\": \"03e20235-001c-4df7-a12b-3b0e0cf85d03\",\n\t\"cardId\": \"6ba7b810-9dad-11d1-80b4-00c04fd430c8\",\n\t\"reason\": \"Compra nao reconhecida\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/card-transactions/dispute",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"card-transactions",
+								"dispute"
+							]
+						},
+						"description": "Generated from cURL: curl --request POST \\\n  --url http://localhost:8080/api/card-transactions/dispute \\\n  --header 'Content-Type: application/json' \\\n  --data '{\n\t\"transactionId\": \"03e20235-001c-4df7-a12b-3b0e0cf85d03\",\n\t\"cardId\": \"6ba7b810-9dad-11d1-80b4-00c04fd430c8\",\n\t\"reason\": \"Compra nao reconhecida\"\n}'"
+					},
+					"response": []
+				},
+				{
+					"name": "Process a refund for a transaction - event sorucing",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"transactionId\": \"f6fafed3-9a9d-475c-b866-4b9a8b1b7461\",\n\t\"cardId\": \"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/card-transactions/refund",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"card-transactions",
+								"refund"
+							]
+						},
+						"description": "Generated from cURL: curl --request POST \\\n  --url http://localhost:8080/api/card-transactions/refund \\\n  --header 'Content-Type: application/json' \\\n  --data '{\n\t\"transactionId\": \"f6fafed3-9a9d-475c-b866-4b9a8b1b7461\",\n\t\"cardId\": \"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"\n}'"
+					},
+					"response": []
+				},
+				{
+					"name": "Process a new transaction - event sourcing",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"cnpj\": \"12345678901234\",\n\t\"amount\": 1500.50,\n\t\"customerId\": \"f8cc73d0-a9bd-4874-aa62-b3db6d229269\",\n\t\"description\": \"dummy transaction\",\n\t\"cardId\": \"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/card-transactions",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"card-transactions"
+							]
+						},
+						"description": "Generated from cURL: curl --request POST \\\n  --url http://localhost:8080/api/card-transactions \\\n  --header 'Content-Type: application/json' \\\n  --data '{\n\t\"cnpj\": \"12345678901234\",\n\t\"amount\": 1500.50,\n\t\"customerId\": \"f8cc73d0-a9bd-4874-aa62-b3db6d229269\",\n\t\"description\": \"dummy transaction\",\n\t\"cardId\": \"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"\n}'"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Rewards Query",
+			"item": [
+				{
+					"name": "New Request",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8084/api/rewards/rollbacks",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8084",
+							"path": [
+								"api",
+								"rewards",
+								"rollbacks"
+							]
+						},
+						"description": "Generated from cURL: curl --request GET \\\n  --url http://localhost:8084/api/rewards/rollbacks \\\n  --header 'Content-Type: application/json'"
+					},
+					"response": []
+				},
+				{
+					"name": "Card Rewards",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8084/api/rewards/card/f47ac10b-58cc-4372-a567-0e02b2c3d479",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8084",
+							"path": [
+								"api",
+								"rewards",
+								"card",
+								"f47ac10b-58cc-4372-a567-0e02b2c3d479"
+							]
+						},
+						"description": "Generated from cURL: curl --request GET \\\n  --url http://localhost:8084/api/rewards/card/f47ac10b-58cc-4372-a567-0e02b2c3d479 \\\n  --header 'Content-Type: application/json'"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Card Service Query",
+			"item": [
+				{
+					"name": "Invoice QUery",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "*/*"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8081/api/invoice?cardId=6ba7b810-9dad-11d1-80b4-00c04fd430c8&clientId=f8cc73d0-a9bd-4874-aa62-b3db6d229269",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"invoice"
+							],
+							"query": [
+								{
+									"key": "cardId",
+									"value": "6ba7b810-9dad-11d1-80b4-00c04fd430c8"
+								},
+								{
+									"key": "clientId",
+									"value": "f8cc73d0-a9bd-4874-aa62-b3db6d229269"
+								}
+							]
+						},
+						"description": "Generated from cURL: curl --request GET \\\n  --url 'http://localhost:8081/api/invoice?cardId=6ba7b810-9dad-11d1-80b4-00c04fd430c8&clientId=f8cc73d0-a9bd-4874-aa62-b3db6d229269' \\\n  --header 'accept: */*'"
+					},
+					"response": []
+				},
+				{
+					"name": "Card Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/card-details?cardId=6ba7b810-9dad-11d1-80b4-00c04fd430c8&clientId=f8cc73d0-a9bd-4874-aa62-b3db6d229269",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"card-details"
+							],
+							"query": [
+								{
+									"key": "cardId",
+									"value": "6ba7b810-9dad-11d1-80b4-00c04fd430c8"
+								},
+								{
+									"key": "clientId",
+									"value": "f8cc73d0-a9bd-4874-aa62-b3db6d229269"
+								}
+							]
+						},
+						"description": "Generated from cURL: curl --request GET \\\n  --url 'http://localhost:8081/api/card-details?cardId=6ba7b810-9dad-11d1-80b4-00c04fd430c8&clientId=f8cc73d0-a9bd-4874-aa62-b3db6d229269'"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Card Service command",
+			"item": [
+				{
+					"name": "Dispute Transaction",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"transactionId\": \"a10058d2-66e0-4fd1-9e96-17d5e2d437e1\",\n\t\"reason\": \"Compra nao reconhecida\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/card-transactions/dispute",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"card-transactions",
+								"dispute"
+							]
+						},
+						"description": "Generated from cURL: curl --request POST \\\n  --url http://localhost:8080/api/card-transactions/dispute \\\n  --header 'Content-Type: application/json' \\\n  --data '{\n\t\"transactionId\": \"a10058d2-66e0-4fd1-9e96-17d5e2d437e1\",\n\t\"reason\": \"Compra nao reconhecida\"\n}'"
+					},
+					"response": []
+				},
+				{
+					"name": "Process a refund for a transaction",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"transactionId\": \"94d89db5-c4d7-444b-ac87-eadaccbfa5c8\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/card-transactions/refund",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"card-transactions",
+								"refund"
+							]
+						},
+						"description": "Generated from cURL: curl --request POST \\\n  --url http://localhost:8080/api/card-transactions/refund \\\n  --header 'Content-Type: application/json' \\\n  --data '{\n\t\"transactionId\": \"94d89db5-c4d7-444b-ac87-eadaccbfa5c8\"\n}'"
+					},
+					"response": []
+				},
+				{
+					"name": "Process a new transaction",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"cnpj\": \"12345678901234\",\n\t\"amount\": 1500.50,\n\t\"customerId\": \"f8cc73d0-a9bd-4874-aa62-b3db6d229269\",\n\t\"description\": \"dummy transaction\",\n\t\"cardId\": \"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/card-transactions",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"card-transactions"
+							]
+						},
+						"description": "Generated from cURL: curl --request POST \\\n  --url http://localhost:8080/api/card-transactions \\\n  --header 'Content-Type: application/json' \\\n  --data '{\n\t\"cnpj\": \"12345678901234\",\n\t\"amount\": 1500.50,\n\t\"customerId\": \"f8cc73d0-a9bd-4874-aa62-b3db6d229269\",\n\t\"description\": \"dummy transaction\",\n\t\"cardId\": \"6ba7b810-9dad-11d1-80b4-00c04fd430c8\"\n}'"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  rewards_db_event_sourcing:
+    image: eventstore/eventstore:latest
+    container_name: rewards-eventstoredb
+    ports:
+      - "2114:2113" # Changed to 2114 HTTP port
+      - "1114:1113" # Changed to 1114 TCP port
+    environment:
+      - EVENTSTORE_MEM_DB=True # Corrected variable name
+      - EVENTSTORE_RUN_PROJECTIONS=All
+      - EVENTSTORE_START_STANDARD_PROJECTIONS=True
+      - EVENTSTORE_CLUSTER_SIZE=1 #for single node
+      - EVENTSTORE_INSECURE=true # New: Run in insecure mode

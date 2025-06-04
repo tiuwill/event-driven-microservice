@@ -1,17 +1,15 @@
 package com.cardservice.query.service;
 
 
+import com.cardservice.commons.event.TransactionRewardEvent;
 import com.cardservice.query.dto.InvoiceViewData;
-import com.cardservice.query.model.Reward;
 import com.cardservice.query.repository.InvoiceViewRepository;
-import com.rewards.command.command.model.TransactionRewardEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.Optional;
 
 @Service
@@ -19,7 +17,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class RewardEventService {
 
-    //TODO tem bug no total da fatura, esta somenado errado o total.
     private final InvoiceViewRepository invoiceViewRepository;
 
     @KafkaListener(topics = "${kafka.topics.transaction-reward}")

@@ -83,7 +83,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.cardservice.commons</groupId>
-			<artifactId>card-service-commons</artifactId>
+			<artifactId>event-library</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>

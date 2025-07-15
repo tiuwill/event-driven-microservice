@@ -48,6 +48,8 @@ O projeto contém uma estrutura inicial com aplicações e módulos pré-configu
 
 ## 🌿 Branches de Referência
 
+- `main-cqrs-initial`: ponto de partida para acompanhar a aula de CQRS.
+- `main-event-sourcing-initial`: ponto de partida para acompanhar as aulas de Event Sourcing.
 - `cqrs`: implementação completa utilizando CQRS sem Event Sourcing.
 - `event-sourcing`: versão do projeto evoluída com Event Sourcing habilitado.
 

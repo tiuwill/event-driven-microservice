@@ -52,6 +52,8 @@ O projeto contém uma estrutura inicial com aplicações e módulos pré-configu
 - `event-sourcing`: versão do projeto evoluída com Event Sourcing habilitado.
 - Para seguir a aula de CQRS, utilize a branch `main-cqrs-initial`.
 - Para seguir as aulas de Event Sourcing, utilize a branch `main-event-sourcing-initial`.
+- A branch completa com o código finalizado apresentado na aula de CQRS se encontra na branch `cqrs`.
+- A branch completa com o código finalizado apresentado na aula de Event Sourcing se encontra na branch `event-sourcing`.
 
 ---
 

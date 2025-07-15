@@ -48,8 +48,18 @@ O projeto contém uma estrutura inicial com aplicações e módulos pré-configu
 
 ## 🌿 Branches de Referência
 
-- `cqrs`: implementação completa utilizando CQRS sem Event Sourcing.
-- `event-sourcing`: versão do projeto evoluída com Event Sourcing habilitado.
+Para acompanhar a implementação passo a passo durante as aulas, utilize as
+branches de início abaixo:
+
+- `main-cqrs-initial` – ponto de partida para a aula de **CQRS**.
+- `main-event-sourcing-initial` – ponto de partida para as aulas de
+  **Event Sourcing**.
+
+Caso deseje consultar o código finalizado apresentado em cada etapa, utilize as
+branches a seguir:
+
+- `cqrs` – implementação completa utilizando CQRS sem Event Sourcing.
+- `event-sourcing` – versão do projeto evoluída com Event Sourcing habilitado.
 
 ---
 
